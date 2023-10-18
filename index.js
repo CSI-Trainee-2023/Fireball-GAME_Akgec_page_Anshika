@@ -78,14 +78,69 @@ class Projectile{
 }
 
 
+class Invader{
+    constructor() {
+        this.position = {
+            x: canvas.width / 2 - this.width / 2,
+            y:200
+        }
+
+        this.velocity = {
+            x:0,
+            y:0
+        }
+
+        const image = new Image()
+        image.src ='./img/enemy.png'
+        image.onload = () => {
+
+         const scale = 0.03    //enemy size
+         this.image = image
+         this.width = image.width *scale
+         this.height = image.height *scale
+         this.position = {
+            x: canvas.width / 2 - this.width / 2,
+            y: canvas.height  / 2
+          }
+         
+        }
+     }
+     
+
+       
+     
+     draw() {
+
+        //c.fillStyle ='red'
+        //c.fillRect(this.position.x , this.position.y , this.width , this.height)
+
+        if(this.image)
+        c.drawImage(this.image , this.position.x , this.position.y , this.width , this.height)
+     
+    }
+     
+
+       update(){
+         if(this.image) {
+         this.draw()
+         this.position.x += this.velocity.x
+         this.position.y += this.velocity.y
+         
+         }
+       } 
+}
+         
+
+
 
 
 
 const player = new Player()
 // const for shooting multiple projectiles [empyt array]
-const projectiles = [
-   
-]
+const projectiles = []
+
+// const for enemy
+const invader = new Invader()
 
 //for add keyboard functinality
 const keys ={
@@ -104,6 +159,7 @@ function animate(){
     requestAnimationFrame(animate)
     c.fillStyle ='black'
     c.fillRect(0,0,canvas.width, canvas.height)
+    invader.update()
 
      player.update()
 
@@ -124,7 +180,7 @@ function animate(){
      })
 
 
-
+    //moving player
     if (keys.a.pressed  && player.position.x >=0 ){
     player.velocity.x = -7
     
