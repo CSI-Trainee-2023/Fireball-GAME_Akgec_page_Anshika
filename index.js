@@ -79,7 +79,7 @@ class Projectile{
 
 
 class Invader{
-    constructor() {
+    constructor({position}) {
         this.position = {
             x: canvas.width / 2 - this.width / 2,
             y:200
@@ -99,8 +99,8 @@ class Invader{
          this.width = image.width *scale
          this.height = image.height *scale
          this.position = {
-            x: canvas.width / 2 - this.width / 2,
-            y: canvas.height  / 2
+            x: position.x,
+            y: position.y
           }
          
         }
@@ -129,6 +129,39 @@ class Invader{
          }
        } 
 }
+
+//for making multiple enemies
+class Grid{
+    constructor(){
+        this.position = {
+            x: 0,
+            y: 0
+        }
+        
+        this.velocity = {
+            x: 0,
+            y: 0
+        }
+
+        this.invaders = []  //storing new invader in the array "grid" / populating
+
+        const rows = Math.floor(Math.random() * 5 + 2)
+        const columns = Math.floor(Math.random() * 10 + 4)
+
+        for (let x =0 ; x < columns ; x++){     //for ships in a columns
+            for (let y =0 ; y < rows; y++){    //in the rows
+        this.invaders.push(new Invader({position: {
+        x: x*50,
+        y: y*50
+
+        }}))
+    }}
+
+        console.log(this.invaders)
+    }
+    update()  {}
+
+}
          
 
 
@@ -139,8 +172,7 @@ const player = new Player()
 // const for shooting multiple projectiles [empyt array]
 const projectiles = []
 
-// const for enemy
-const invader = new Invader()
+const grids =[new Grid()]
 
 //for add keyboard functinality
 const keys ={
@@ -159,7 +191,7 @@ function animate(){
     requestAnimationFrame(animate)
     c.fillStyle ='black'
     c.fillRect(0,0,canvas.width, canvas.height)
-    invader.update()
+    
 
      player.update()
 
@@ -177,6 +209,13 @@ function animate(){
             projectile.update()
         }
         projectile.update() // calling update
+     })
+
+     grids.forEach((grid) =>{
+        grid.update()
+        grid.invaders.forEach(invader => {
+            invader.update()
+        })
      })
 
 
