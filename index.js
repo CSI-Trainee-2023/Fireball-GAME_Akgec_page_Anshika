@@ -38,7 +38,7 @@ class Player{
 
         //c.fillStyle ='red'
         //c.fillRect(this.position.x , this.position.y , this.width , this.height)
-
+        c.globalAlpha =this.opacity
         if(this.image)
         c.drawImage(this.image , this.position.x , this.position.y , this.width , this.height)
      
@@ -92,6 +92,8 @@ class Invader{
             x:0,
             y:0
         }
+
+        this.opacity =1
 
         const image = new Image()
         image.src ='./img/enemy.png'
@@ -207,7 +209,6 @@ const keys ={
     }
 }
 
-
 let score= 0
 
 function animate(){
@@ -227,6 +228,7 @@ function animate(){
             projectiles.splice(index,1)
         },0)
         }
+
         
         else{
             projectile.update()
@@ -261,6 +263,7 @@ function animate(){
                                 scoreEl.innerHTML = score
                         grid.invaders.splice(i, 1)
                         projectiles.splice(j, 1)
+                        
                     }
                      },0)
                 }                            
@@ -278,6 +281,7 @@ function animate(){
     }else {
     player.velocity.x = 0
     }
+    
 
 }
 
@@ -295,7 +299,7 @@ addEventListener('keydown',({key}) => {
             keys.d.pressed = true
          break
 
-         // for shooting projectiles in case od spacebar
+         // for shooting projectiles in case spacebar is hit
         case ' ':
             console.log('space')
             projectiles.push(
@@ -310,7 +314,7 @@ addEventListener('keydown',({key}) => {
                 }
             }))
 
-        // console.log(projectiles)   
+        
          break
 
     }
