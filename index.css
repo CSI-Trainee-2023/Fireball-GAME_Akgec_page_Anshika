@@ -4,3 +4,12 @@
 #body{
     margin: 0;
 }
+.score{
+    position: fixed ; 
+    z-index: 10;
+    color: white;
+    margin-left: 5%;
+    margin-top: 5%;
+    margin:0;
+    font-family: sans-serif;
+}

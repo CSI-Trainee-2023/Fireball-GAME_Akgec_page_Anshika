@@ -1,5 +1,8 @@
+const scoreEl =document.querySelector('#scoreEl')
 const canvas =document.querySelector('canvas')
 const c = canvas.getContext('2d')
+
+console.log(scoreEl)
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -120,11 +123,11 @@ class Invader{
     }
      
 
-       update(){
+       update({velocity}){
          if(this.image) {
          this.draw()
-         this.position.x += this.velocity.x
-         this.position.y += this.velocity.y
+         this.position.x += velocity.x
+         this.position.y += velocity.y
          
          }
        } 
@@ -139,7 +142,7 @@ class Grid{
         }
         
         this.velocity = {
-            x: 0,
+            x: 3,
             y: 0
         }
 
@@ -147,19 +150,36 @@ class Grid{
 
         const rows = Math.floor(Math.random() * 5 + 2)
         const columns = Math.floor(Math.random() * 10 + 4)
+        // limiting the movement if invaders
+        this.width = columns * 50 //"50=width of invader"     // = column ~ since the columns are going to determine the row width
 
         for (let x =0 ; x < columns ; x++){     //for ships in a columns
             for (let y =0 ; y < rows; y++){    //in the rows
-        this.invaders.push(new Invader({position: {
-        x: x*50,
-        y: y*50
-
-        }}))
-    }}
+              this.invaders.push(
+                new Invader({
+                    position: {
+                      x: x*50,
+                      y: y*50
+                    }
+                  })
+              )
+            }  
+         }
 
         console.log(this.invaders)
     }
-    update()  {}
+    update()  {
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+
+        this.velocity.y = 0  // grid velocity for every frame so it does not go down in one touch
+
+        if (this.position.x + this.width >= canvas.width || this.position.x <= 0 ){ //for limiting right and left margin for invador
+            this.velocity.x = -this.velocity.x
+
+            this.velocity.y = 50                                         //pushing invaders down (but is maintaning the vel0city sooo)
+        }
+    }
 
 }
          
@@ -187,6 +207,9 @@ const keys ={
     }
 }
 
+
+let score= 0
+
 function animate(){
     requestAnimationFrame(animate)
     c.fillStyle ='black'
@@ -213,9 +236,36 @@ function animate(){
 
      grids.forEach((grid) =>{
         grid.update()
-        grid.invaders.forEach(invader => {
-            invader.update()
-        })
+        grid.invaders.forEach((invader, i) => {
+            invader.update({ velocity: grid.velocity })
+                                                                                                                 //shooting invader
+            projectiles.forEach((projectile,j) => {                                                               //detecting colision using if statement
+
+                if (projectile.position.y - projectile.radius <= invader.position.y + invader.height &&
+                     projectile.position.x + projectile.radius<= invader.position.x &&                           //rt isde of projectile > left side og invader
+                    projectile.position.x - projectile.radius <= invader.position.x&&                            
+                     projectile.position.y + projectile.radius >= invader.position.y                                                                                           //bottom of projec>bottom of invader
+                    ){                           
+                     setTimeout(() => {
+                        const invaderFound =grid.invaders.find(invader2 =>
+                            
+                                invader2 === invader 
+
+                            )
+                         const projectileFound = projectiles.find(
+                            projectile2 =>projectile2 === projectile
+                         )   
+                            if (invaderFound && projectileFound) {
+                                score += 100
+                                console.log(score)
+                                scoreEl.innerHTML = score
+                        grid.invaders.splice(i, 1)
+                        projectiles.splice(j, 1)
+                    }
+                     },0)
+                }                            
+            })                                                                                                                        //position.y == middle of circle && after - pro...==projectile
+        })                                                                                    
      })
 
 
