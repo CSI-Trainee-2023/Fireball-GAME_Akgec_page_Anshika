@@ -47,10 +47,47 @@ class Player{
          this.draw()
          this.position.x += this.velocity.x
          }
-       }
-    
+       } 
 }
+ // adding the shooting projectiles
+class Projectile{
+    constructor({position , velocity}){
+        this.position = position
+        this.velocity = velocity
+
+        this.radius = 3
+    }
+    draw(){
+        //since only arc pissible using math to create circle
+        c.beginPath()
+        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
+        //chooosing color for projectile
+        c.fillStyle = 'red'
+        c.fill()
+
+        c.closePath()
+    }
+    // for moving prjectile making update
+
+    update(){
+        this.draw()
+        //moving projectile (adding velocity)
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+    }
+}
+
+
+
+
+
 const player = new Player()
+// const for shooting multiple projectiles [empyt array]
+const projectiles = [
+   
+]
+
+//for add keyboard functinality
 const keys ={
     a: {
         pressed:false
@@ -69,6 +106,24 @@ function animate(){
     c.fillRect(0,0,canvas.width, canvas.height)
 
      player.update()
+
+     //actually addign multiple projectiles
+
+     projectiles.forEach((projectile, index )=> {
+          //splice for removing shot projectiles from the array
+        if (projectile.position.y + projectile.radius <= 0){
+           setTimeout( () => {                       //using timeout to prevent flashing occuring on the screen
+            projectiles.splice(index,1)
+        },0)
+        }
+        
+        else{
+            projectile.update()
+        }
+        projectile.update() // calling update
+     })
+
+
 
     if (keys.a.pressed  && player.position.x >=0 ){
     player.velocity.x = -7
@@ -94,8 +149,23 @@ addEventListener('keydown',({key}) => {
             console.log('right')
             keys.d.pressed = true
          break
+
+         // for shooting projectiles in case od spacebar
         case ' ':
             console.log('space')
+            projectiles.push(
+                new Projectile({
+                position: {
+                    x: player.position.x + player.width / 2,
+                    y: player.position.y
+                },
+                velocity:{
+                    x: 0,
+                    y: -10
+                }
+            }))
+
+        // console.log(projectiles)   
          break
 
     }
